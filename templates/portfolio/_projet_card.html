@@ -1,0 +1,20 @@
+<article class="card">
+  <div class="card__media" aria-hidden="true">
+    {% if projet.image %}<img src="{{ projet.image.url }}" alt="" loading="lazy">{% else %}<span class="card__placeholder">{{ projet.titre|slice:":1" }}</span>{% endif %}
+  </div>
+  <div class="card__body">
+    <div class="card__top">
+      <p class="meta">{{ projet.date|date:"F Y" }}</p>
+      {% if projet.a_la_une %}<span class="tag">À la une</span>{% endif %}
+    </div>
+    <h3><a href="{{ projet.get_absolute_url }}">{{ projet.titre }}</a></h3>
+    <p class="card__desc">{{ projet.description|truncatewords:26 }}</p>
+    <ul class="chips">{% for t in projet.technologies.all %}<li><i class="{{ t.icone_classe }}"></i>{{ t.nom }}</li>{% endfor %}</ul>
+    {% if projet.lien_github or projet.lien_demo %}
+    <p class="card__links">
+      {% if projet.lien_github %}<a href="{{ projet.lien_github }}" target="_blank" rel="noopener"><i class="bi bi-github"></i> Code</a>{% endif %}
+      {% if projet.lien_demo %}<a href="{{ projet.lien_demo }}" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right"></i> Démo</a>{% endif %}
+    </p>
+    {% endif %}
+  </div>
+</article>

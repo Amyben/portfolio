@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load portfolio_tags %}
+{% load static %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero__scene" data-scene aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="hero__content">
+      <h1>{{ site.nom }}</h1>
+      <p class="hero__title">{{ site.titre }}</p>
+      <p class="lead">{{ site.accroche|linebreaksbr }}</p>
+      {% if site.domaines %}
+        <ul class="hero__domaines" aria-label="Domaines">
+          {% for libelle, icone in site.domaines %}<li><i class="bi {{ icone }}" aria-hidden="true"></i>{{ libelle }}</li>{% endfor %}
+        </ul>
+      {% endif %}
+      <p class="hero__actions">
+        {% if a_des_projets %}<a class="btn" href="{% url 'portfolio:projets' %}"><i class="bi bi-grid-1x2"></i> Voir mes projets</a>{% endif %}
+        <a class="btn{% if a_des_projets %} btn--ghost{% endif %}" href="#contact"><i class="bi bi-envelope"></i> Me contacter</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="a-propos" class="section">
+  <div class="wrap about">
+    <h2>Du poste de travail au réseau.</h2>
+    <div>
+      <p>Titulaire d’une licence professionnelle en sécurité des systèmes et réseaux informatiques, je suis orienté support technique, maintenance et administration réseau.</p>
+      <p>J’installe, configure et dépanne postes de travail et imprimantes, diagnostique les incidents matériels et logiciels, réalise le câblage réseau et sécurise les infrastructures avec pfSense, tout en analysant et auditant les réseaux avec Wireshark et Nmap.</p>
+      <p>J’aime aussi transmettre : j’ai formé des apprenants en maintenance informatique et en développement web. La cybersécurité reste mon domaine de prédilection, en veille comme en pratique sur des labs.</p>
+    </div>
+  </div>
+</section>
+
+{% if competences %}
+<section class="section">
+  <div class="wrap">
+    <h2>Compétences</h2>
+    <div class="skills">
+      {% for categorie, items in competences %}
+        <div class="skills__group panel">
+          <h3>{{ categorie }}</h3>
+          <ul>
+            {% for c in items %}
+              <li><span>{{ c.nom }}</span><span class="bar" style="--n: {{ c.niveau }}%" role="img" aria-label="Niveau {{ c.niveau }} sur 100"></span></li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section id="parcours" class="section">
+  <div class="wrap timeline-grid">
+    <div>
+      <h2>Parcours</h2>
+      <ol class="timeline">
+        {% for e in parcours_pro %}
+          <li{% if e.en_cours %} class="is-current"{% endif %}>
+            <p class="meta">{{ e.date_debut|date:"F Y" }} – {% if e.en_cours %}<span class="tag">Aujourd'hui</span>{% else %}{{ e.date_fin|date:"F Y" }}{% endif %}</p>
+            <h3>{{ e.poste }}</h3>
+            <p class="org">{{ e.organisation }}{% if e.lieu %}, {{ e.lieu }}{% endif %}</p>
+            {% if e.missions %}<ul class="missions">{% for m in e.missions %}<li>{{ m }}</li>{% endfor %}</ul>{% endif %}
+          </li>
+        {% empty %}<li>Aucune expérience renseignée.</li>{% endfor %}
+      </ol>
+    </div>
+    <aside>
+      <h2>Formation</h2>
+      <ol class="timeline timeline--compact">
+        {% for e in formations %}
+          <li><p class="meta">{{ e.date_fin|default:e.date_debut|date:"Y" }}</p><h3>{{ e.poste }}</h3><p class="org">{{ e.organisation }}</p></li>
+        {% endfor %}
+      </ol>
+      {% if certifications %}
+        <h2>Certifications</h2>
+        <ol class="timeline timeline--compact">
+          {% for e in certifications %}
+            <li>
+              <p class="meta">{{ e.date_debut|date:"Y" }}</p><h3>{{ e.poste }}</h3><p class="org">{{ e.organisation }}</p>
+              {% if e.lien %}<p class="verif"><a href="{{ e.lien }}" target="_blank" rel="noopener"><i class="bi bi-patch-check"></i> Vérifier la certification</a></p>{% endif %}
+            </li>
+          {% endfor %}
+        </ol>
+      {% endif %}
+    </aside>
+  </div>
+</section>
+
+{% if projets %}
+<section class="section">
+  <div class="wrap">
+    <div class="section__head">
+      <h2>Projets à la une</h2>
+      <a href="{% url 'portfolio:projets' %}">Tous les projets</a>
+    </div>
+    <div class="cards">{% for projet in projets %}{% include "portfolio/_projet_card.html" %}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+
+{% if articles %}
+<section class="section">
+  <div class="wrap">
+    <div class="section__head">
+      <h2>Derniers articles</h2>
+      <a href="{% url 'portfolio:blog' %}">Tous les articles</a>
+    </div>
+    <ul class="posts panel">
+      {% for a in articles %}<li><a href="{{ a.get_absolute_url }}"><span class="meta">{{ a.date_publication|date:"j F Y" }}</span><span>{{ a.titre }}</span></a></li>{% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+<section id="contact" class="section">
+  <div class="wrap contact">
+    <div>
+      <h2>Un projet, un poste, une question ?</h2>
+      <p>Écrivez-moi, je réponds rapidement.</p>
+      <ul class="contact__list">
+        {% if site.email %}<li><i class="bi bi-envelope"></i>{% email_protege site.email %}</li>{% endif %}
+        {% if site.telephone %}<li><i class="bi bi-telephone"></i>{{ site.telephone }}</li>{% endif %}
+        {% if site.github %}<li><i class="bi bi-github"></i><a href="{{ site.github }}" target="_blank" rel="noopener">GitHub</a></li>{% endif %}
+        {% if site.linkedin %}<li><i class="bi bi-linkedin"></i><a href="{{ site.linkedin }}" target="_blank" rel="noopener">LinkedIn</a></li>{% endif %}
+        <li><i class="bi bi-geo-alt"></i>{{ site.ville }}</li>
+      </ul>
+    </div>
+    {% include "portfolio/_contact_form.html" %}
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{% static 'js/scene.js' %}"></script>
+{% endblock %}

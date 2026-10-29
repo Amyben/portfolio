@@ -1,0 +1,15 @@
+<form class="form panel" method="post" action="{% url 'portfolio:contact' %}" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}<p class="form__error">{{ form.non_field_errors|join:" " }}</p>{% endif %}
+  <div class="form__row">
+    {% for field in form %}{% if field.name != "site_web" %}
+      <div class="field{% if field.name == 'contenu' or field.name == 'sujet' %} field--full{% endif %}{% if field.errors %} field--error{% endif %}">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% for e in field.errors %}<small>{{ e }}</small>{% endfor %}
+      </div>
+    {% endif %}{% endfor %}
+  </div>
+  <div class="hp" aria-hidden="true"><label for="id_site_web">Ne pas remplir</label>{{ form.site_web }}</div>
+  <button class="btn" type="submit"><i class="bi bi-send"></i> Envoyer le message</button>
+</form>

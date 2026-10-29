@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ article.titre }} — {{ site.nom }}{% endblock %}
+{% block description %}{{ article.contenu|truncatewords:30 }}{% endblock %}
+
+{% block content %}
+<article class="section">
+  <div class="wrap narrow">
+    <a class="back" href="{% url 'portfolio:blog' %}"><i class="bi bi-arrow-left"></i> Tous les articles</a>
+    <h1>{{ article.titre }}</h1>
+    <p class="meta">Publié le {{ article.date_publication|date:"j F Y" }}</p>
+    {% if article.image %}<img class="cover" src="{{ article.image.url }}" alt="">{% endif %}
+    <div class="prose">{{ article.contenu|linebreaks }}</div>
+  </div>
+</article>
+{% endblock %}

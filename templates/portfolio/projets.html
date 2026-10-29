@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Projets — {{ site.nom }}{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="wrap">
+    <h1>Projets</h1>
+    <p class="section__intro">Applications web, infrastructures réseau et sécurité : ce que j'ai conçu, installé ou développé.</p>
+    {% if technologies %}
+      <nav class="filters" aria-label="Filtrer par technologie">
+        <a href="{% url 'portfolio:projets' %}" {% if not techno_active %}aria-current="true"{% endif %}>Tous</a>
+        {% for t in technologies %}<a href="?techno={{ t.nom|urlencode }}" {% if techno_active == t.nom %}aria-current="true"{% endif %}>{{ t.nom }}</a>{% endfor %}
+      </nav>
+    {% endif %}
+    {% if page.object_list %}
+      <div class="cards">{% for projet in page %}{% include "portfolio/_projet_card.html" %}{% endfor %}</div>
+      {% include "portfolio/_pagination.html" %}
+    {% else %}
+      <p class="empty">Aucun projet{% if techno_active %} avec {{ techno_active }}{% endif %} pour le moment.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

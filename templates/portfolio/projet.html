@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ projet.titre }} — {{ site.nom }}{% endblock %}
+{% block description %}{{ projet.description|truncatewords:30 }}{% endblock %}
+
+{% block content %}
+<article class="section">
+  <div class="wrap narrow">
+    <a class="back" href="{% url 'portfolio:projets' %}"><i class="bi bi-arrow-left"></i> Tous les projets</a>
+    <h1>{{ projet.titre }}</h1>
+    <p class="meta">{{ projet.date|date:"F Y" }}{% if projet.a_la_une %} <span class="tag">À la une</span>{% endif %}</p>
+    <ul class="chips">{% for t in projet.technologies.all %}<li><i class="{{ t.icone_classe }}"></i>{{ t.nom }}</li>{% endfor %}</ul>
+    {% if projet.image %}<img class="cover" src="{{ projet.image.url }}" alt="Capture du projet {{ projet.titre }}">{% endif %}
+    <div class="prose">{{ projet.description|linebreaks }}</div>
+    {% if projet.lien_github or projet.lien_demo %}
+    <p class="hero__actions">
+      {% if projet.lien_github %}<a class="btn" href="{{ projet.lien_github }}" target="_blank" rel="noopener"><i class="bi bi-github"></i> Voir le code source</a>{% endif %}
+      {% if projet.lien_demo %}<a class="btn btn--ghost" href="{{ projet.lien_demo }}" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right"></i> Ouvrir la démo</a>{% endif %}
+    </p>
+    {% endif %}
+  </div>
+</article>
+{% if autres %}
+<section class="section">
+  <div class="wrap">
+    <h2>Autres projets</h2>
+    <div class="cards">{% for projet in autres %}{% include "portfolio/_projet_card.html" %}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

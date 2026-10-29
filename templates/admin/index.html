@@ -1,0 +1,112 @@
+{% extends 'admin/base.html' %}
+{% load i18n %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+    {% include "unfold/helpers/site_branding.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="fx-dash">
+  <header class="fx-hero">
+    <div>
+      <p class="fx-hero__date">{% now "l j F Y" %}</p>
+      <h1 class="fx-hero__title">Bonjour, {{ request.user.get_short_name|default:request.user.get_username }}</h1>
+      <p class="fx-hero__sub">
+        {% if non_lus %}{{ non_lus }} message{{ non_lus|pluralize }} attend{{ non_lus|pluralize:"ent" }} votre réponse.{% else %}Tout est à jour. Aucun message en attente.{% endif %}
+      </p>
+    </div>
+    <div class="fx-hero__actions">
+      <a class="fx-btn fx-btn--primary" href="{% url 'admin:portfolio_projet_add' %}"><span class="material-symbols-outlined">add</span>Ajouter un projet</a>
+      <a class="fx-btn" href="{% url 'admin:portfolio_article_add' %}"><span class="material-symbols-outlined">edit_note</span>Écrire un article</a>
+    </div>
+  </header>
+
+  <section class="fx-signals" aria-label="État du contenu">
+    <a class="fx-signal{% if non_lus %} fx-signal--live{% endif %}" href="{% url 'admin:portfolio_message_changelist' %}{% if non_lus %}?lu__exact=0{% endif %}">
+      <span class="material-symbols-outlined fx-signal__icon">mail</span>
+      <span class="fx-signal__value">{{ non_lus }}</span>
+      <span class="fx-signal__label">message{{ non_lus|pluralize }} non lu{{ non_lus|pluralize }}</span>
+    </a>
+    <a class="fx-signal" href="{% url 'admin:portfolio_projet_changelist' %}">
+      <span class="material-symbols-outlined fx-signal__icon">rocket_launch</span>
+      <span class="fx-signal__value">{{ nb_projets }}</span>
+      <span class="fx-signal__label">projet{{ nb_projets|pluralize }} en ligne, {{ nb_a_la_une }} à la une</span>
+    </a>
+    <a class="fx-signal" href="{% url 'admin:portfolio_article_changelist' %}">
+      <span class="material-symbols-outlined fx-signal__icon">edit_note</span>
+      <span class="fx-signal__value">{{ nb_articles }}</span>
+      <span class="fx-signal__label">article{{ nb_articles|pluralize }} publié{{ nb_articles|pluralize }}{% if nb_brouillons %}, {{ nb_brouillons }} brouillon{{ nb_brouillons|pluralize }}{% endif %}</span>
+    </a>
+    <a class="fx-signal" href="{% url 'admin:portfolio_experience_changelist' %}">
+      <span class="material-symbols-outlined fx-signal__icon">timeline</span>
+      <span class="fx-signal__value">{{ nb_experiences }}</span>
+      <span class="fx-signal__label">expérience{{ nb_experiences|pluralize }}, {{ nb_formations }} formation{{ nb_formations|pluralize }}, {{ nb_competences }} compétence{{ nb_competences|pluralize }}</span>
+    </a>
+  </section>
+
+  <div class="fx-panels">
+    <section class="fx-panel">
+      <header class="fx-panel__head">
+        <h2>Derniers messages</h2>
+        <a href="{% url 'admin:portfolio_message_changelist' %}">Tout voir</a>
+      </header>
+      {% if derniers_messages %}
+        <ul class="fx-list">
+          {% for m in derniers_messages %}
+            <li>
+              <a href="{% url 'admin:portfolio_message_change' m.pk %}">
+                <span class="fx-dot{% if not m.lu %} fx-dot--on{% endif %}" aria-label="{% if m.lu %}Lu{% else %}Nouveau{% endif %}"></span>
+                <span class="fx-list__main"><strong>{{ m.sujet }}</strong><small>{{ m.nom }}</small></span>
+                <time datetime="{{ m.date|date:'c' }}">{{ m.date|date:"j M" }}</time>
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="fx-empty"><span class="material-symbols-outlined">inbox</span>Aucun message pour l'instant. Ceux envoyés depuis le formulaire de contact du site apparaîtront ici.</p>
+      {% endif %}
+    </section>
+
+    <section class="fx-panel">
+      <header class="fx-panel__head">
+        <h2>Projets récents</h2>
+        <a href="{% url 'admin:portfolio_projet_changelist' %}">Tout voir</a>
+      </header>
+      {% if projets_recents %}
+        <ul class="fx-list">
+          {% for p in projets_recents %}
+            <li>
+              <a href="{% url 'admin:portfolio_projet_change' p.pk %}">
+                <span class="material-symbols-outlined fx-list__icon">{% if p.a_la_une %}star{% else %}folder{% endif %}</span>
+                <span class="fx-list__main"><strong>{{ p.titre }}</strong><small>{% for t in p.technologies.all|slice:":4" %}{{ t.nom }}{% if not forloop.last %}, {% endif %}{% empty %}Aucune technologie{% endfor %}</small></span>
+                <time datetime="{{ p.date|date:'c' }}">{{ p.date|date:"M Y" }}</time>
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="fx-empty"><span class="material-symbols-outlined">rocket_launch</span>Aucun projet. Ajoutez votre première réalisation pour l'afficher sur le site.</p>
+      {% endif %}
+    </section>
+
+    <section class="fx-panel">
+      <header class="fx-panel__head">
+        <h2>Ajouter du contenu</h2>
+      </header>
+      <ul class="fx-list">
+        {% for lien in ajouts %}
+          <li>
+            <a href="{% url lien.url %}">
+              <span class="material-symbols-outlined fx-list__icon">{{ lien.icone }}</span>
+              <span class="fx-list__main"><strong>{{ lien.titre }}</strong><small>{{ lien.aide }}</small></span>
+              <span class="material-symbols-outlined fx-list__icon">add</span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </section>
+  </div>
+</div>
+{% endblock %}

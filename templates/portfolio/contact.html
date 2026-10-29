@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load portfolio_tags %}
+{% block title %}Contact — {{ site.nom }}{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="wrap contact">
+    <div>
+      <h1>Me contacter</h1>
+      <p>Une offre, une mission ou simplement une question : je vous réponds rapidement.</p>
+      <ul class="contact__list">
+        {% if site.email %}<li><i class="bi bi-envelope"></i>{% email_protege site.email %}</li>{% endif %}
+        {% if site.telephone %}<li><i class="bi bi-telephone"></i>{{ site.telephone }}</li>{% endif %}
+        {% if site.github %}<li><i class="bi bi-github"></i><a href="{{ site.github }}" target="_blank" rel="noopener">GitHub</a></li>{% endif %}
+        {% if site.linkedin %}<li><i class="bi bi-linkedin"></i><a href="{{ site.linkedin }}" target="_blank" rel="noopener">LinkedIn</a></li>{% endif %}
+        <li><i class="bi bi-geo-alt"></i>{{ site.ville }}</li>
+      </ul>
+    </div>
+    {% include "portfolio/_contact_form.html" %}
+  </div>
+</section>
+{% endblock %}

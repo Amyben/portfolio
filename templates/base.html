@@ -1,0 +1,63 @@
+{% load static portfolio_tags %}<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090d1f">
+  <title>{% block title %}{{ site.nom }} — {{ site.titre }}{% endblock %}</title>
+  <meta name="description" content="{% block description %}{{ site.accroche }}{% endblock %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/devicon@2.16.0/devicon.min.css">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <a class="skip" href="#contenu">Aller au contenu</a>
+  <header class="nav">
+    <div class="wrap nav__inner">
+      <a class="nav__brand" href="{% url 'portfolio:accueil' %}">
+        <svg class="nav__mark" viewBox="0 0 32 32" aria-hidden="true">
+          <defs><radialGradient id="mk" r=".5"><stop offset="0" stop-color="#bdf0ff"/><stop offset="1" stop-color="#4f8dff" stop-opacity="0"/></radialGradient></defs>
+          <circle cx="16" cy="16" r="15" fill="none" stroke="#4f8dff" stroke-opacity=".5" stroke-dasharray="2 3"/>
+          <path d="M16 16 6 9M16 16l10-7M16 16v11" stroke="#7fe0ff" stroke-width="1.4"/>
+          <circle cx="6" cy="9" r="2.2" fill="#8fb4ff"/><circle cx="26" cy="9" r="2.2" fill="#8fb4ff"/><circle cx="16" cy="27" r="2.2" fill="#8fb4ff"/>
+          <circle cx="16" cy="16" r="7" fill="url(#mk)"/><circle cx="16" cy="16" r="3" fill="#dff6ff"/>
+        </svg>
+        {{ site.nom }}
+      </a>
+      <button class="nav__toggle" aria-expanded="false" aria-controls="menu" aria-label="Menu"><i class="bi bi-list"></i></button>
+      <nav id="menu" class="nav__links">
+        <a href="{% url 'portfolio:accueil' %}#a-propos">À propos</a>
+        <a href="{% url 'portfolio:accueil' %}#parcours">Parcours</a>
+        {% if a_des_projets %}<a href="{% url 'portfolio:projets' %}" {% if request.resolver_match.url_name == 'projets' or request.resolver_match.url_name == 'projet' %}aria-current="page"{% endif %}>Projets</a>{% endif %}
+        {% if site.blog_actif %}<a href="{% url 'portfolio:blog' %}" {% if request.resolver_match.url_name == 'blog' or request.resolver_match.url_name == 'article' %}aria-current="page"{% endif %}>Blog</a>{% endif %}
+        <a class="btn btn--small" href="{% url 'portfolio:contact' %}">Me contacter</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenu">
+    {% if messages %}
+      <div class="wrap">{% for m in messages %}<p class="flash flash--{{ m.tags }}" role="status">{{ m }}</p>{% endfor %}</div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__inner">
+      <p>© {% now "Y" %} {{ site.nom }}, {{ site.ville }}</p>
+      <p class="footer__links">
+        {% if site.github %}<a href="{{ site.github }}" aria-label="GitHub" rel="noopener" target="_blank"><i class="bi bi-github"></i></a>{% endif %}
+        {% if site.linkedin %}<a href="{{ site.linkedin }}" aria-label="LinkedIn" rel="noopener" target="_blank"><i class="bi bi-linkedin"></i></a>{% endif %}
+        {% if site.email %}{% email_protege site.email icone_seule=True %}{% endif %}
+      </p>
+    </div>
+  </footer>
+  <script src="{% static 'js/main.js' %}" defer></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Page introuvable{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="wrap narrow">
+    <h1>Cette page n'existe pas.</h1>
+    <p class="section__intro">Le lien est peut-être ancien, ou l'adresse contient une faute de frappe.</p>
+    <p><a class="btn" href="{% url 'portfolio:accueil' %}"><i class="bi bi-house"></i> Retour à l'accueil</a></p>
+  </div>
+</section>
+{% endblock %}

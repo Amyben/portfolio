@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Blog — {{ site.nom }}{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="wrap narrow">
+    <h1>Blog</h1>
+    <p class="section__intro">Notes de terrain sur les réseaux, la sécurité et le développement web.</p>
+    {% if page.object_list %}
+      <ul class="posts panel">
+        {% for a in page %}
+          <li>
+            <a href="{{ a.get_absolute_url }}">
+              <span class="meta">{{ a.date_publication|date:"j F Y" }}</span>
+              <span><strong>{{ a.titre }}</strong><small>{{ a.contenu|truncatewords:30 }}</small></span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+      {% include "portfolio/_pagination.html" %}
+    {% else %}
+      <p class="empty">Aucun article publié pour le moment.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
